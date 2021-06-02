@@ -1,11 +1,9 @@
-import sys
-
 import pygame
+
 from pygame.locals import *
-
 from os import path
-
 from screens.main_menu import main_menu
+from control.suports import quit_game
 
 snake_pong = pygame.image.load(path.join("assets", "sprites", "start_screen", "start_screen.png"))
 
@@ -22,8 +20,7 @@ def start_screen(screen):
     while True:
         for event in pygame.event.get():
             if event.type == QUIT:
-                pygame.quit()
-                sys.exit()
+                quit_game()
             elif event.type == KEYDOWN:
                 main_menu(screen)
 
