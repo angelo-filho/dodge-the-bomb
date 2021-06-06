@@ -31,6 +31,7 @@ def controls_screen(screen):
         if back_rect.collidepoint((mx, my)):
             draw_text("Back", SMALL_FONT, RED, screen, 306, 515)
             if click:
+                SELECT_SOUND.play()
                 running = False
 
         click = False

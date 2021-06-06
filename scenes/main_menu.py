@@ -40,18 +40,22 @@ def main_menu(screen):
         if player_rect.collidepoint((mx, my)):
             draw_text("Play", SMALL_FONT, RED, screen, 306, 314)
             if click:
+                SELECT_SOUND.play()
                 game(screen)
         elif controls_rect.collidepoint((mx, my)):
             draw_text("Controls", SMALL_FONT, RED, screen, 273, 376)
             if click:
+                SELECT_SOUND.play()
                 controls_screen(screen)
         elif credits_rect.collidepoint((mx, my)):
             draw_text("Credits", SMALL_FONT, RED, screen, 281, 438)
             if click:
+                SELECT_SOUND.play()
                 credits_screen(screen)
         elif exit_rect.collidepoint((mx, my)):
             draw_text("Exit", SMALL_FONT, RED, screen, 306, 500)
             if click:
+                SELECT_SOUND.play()
                 quit_game()
 
         click = False

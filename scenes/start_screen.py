@@ -2,8 +2,10 @@ import pygame
 
 from pygame.locals import *
 from os import path
-from scenes.main_menu import main_menu
+
+from control.constants import SELECT_SOUND
 from control.supports import quit_game
+from scenes.main_menu import main_menu
 
 snake_pong = pygame.image.load(path.join("assets", "sprites", "start_screen", "start_screen.png"))
 
@@ -22,6 +24,7 @@ def start_screen(screen):
             if event.type == QUIT:
                 quit_game()
             elif event.type == KEYDOWN:
+                SELECT_SOUND.play()
                 main_menu(screen)
 
         if (message_alpha >= 255 and message_alpha_dir > 0) or (message_alpha <= 0 and message_alpha_dir < 0):

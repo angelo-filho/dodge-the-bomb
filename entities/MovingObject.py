@@ -14,12 +14,7 @@ class MovingObject(pygame.sprite.Sprite):
 
         self.random_angle()
 
-        self.speed = 14
-
-        self.image = pygame.Surface((20, 20))
-
-        self.rect = pygame.Rect(0, 0, 20, 20)
-        self.random_pos()
+        self.speed = 18
 
     def update(self):
         self.movement()
@@ -36,8 +31,8 @@ class MovingObject(pygame.sprite.Sprite):
             self.dy *= -1
 
     def random_pos(self):
-        self.rect.x = randint(0, WINDOW_SIZE[0] - 20)
-        self.rect.y = randint(0, WINDOW_SIZE[0] - 20)
+        self.rect.x = randint(0, WINDOW_SIZE[0] - self.rect.width)
+        self.rect.y = randint(0, WINDOW_SIZE[1] - self.rect.height)
 
     def random_angle(self, ):
         angle = radians(randint(30, 50))

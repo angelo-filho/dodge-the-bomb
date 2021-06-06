@@ -13,13 +13,16 @@ from entities.Hourglass import Hourglass
 from entities.Heart import Heart
 from entities.Snake import Star
 
+# Setting up game states
 NORMAL_STATE = 0
 PAUSE_STATE = 1
 START_STATE = 2
 GAME_OVER_STATE = 3
 
+# Setting up images
 game_over_img = pygame.image.load(join("assets", "sprites", "game", "game_over.png"))
 pause_img = pygame.image.load(join("assets", "sprites", "game", "pause.png"))
+background_img = pygame.image.load(join("assets", "sprites", "game", "background.png"))
 
 
 def spawn_entities(group, entity, length):
@@ -33,10 +36,19 @@ def random_item():
     return item
 
 
+# Game main function
 def game(screen):
+    # Setting up basic game variables
     running = True
     click = False
+
     clock = pygame.time.Clock()
+    fps = 15
+
+    score = 0
+    rounds = 0
+
+    game_state = START_STATE
 
     # Setting up game over state
     try_again_rect = draw_text("Try again", SMALL_FONT, WHITE, screen, 264, 440)
@@ -74,17 +86,13 @@ def game(screen):
     frozen_bg.fill(GRAY)
     frozen_bg.set_alpha(150)
 
-    score = 0
-    rounds = 0
-
-    game_state = START_STATE
-
     while running:
         for event in pygame.event.get():
             if event.type == QUIT:
                 quit_game()
             elif event.type == KEYDOWN:
                 if event.key == K_ESCAPE and game_state == NORMAL_STATE:
+                    # Put in pause state
                     game_state = PAUSE_STATE
             elif event.type == MOUSEBUTTONDOWN and game_state != NORMAL_STATE:
                 if event.button == 1:
@@ -108,7 +116,8 @@ def game(screen):
                     bomb.eatable = False
 
                 if snake.head.rect.colliderect(bomb.rect) and bomb.eatable:
-                    score += 5
+                    APPLE_SOUND.play()
+                    score += 10
                     bomb.kill()
                     continue
 
@@ -118,12 +127,15 @@ def game(screen):
                 snake.collision_with_bomb(big_bomb)
 
             for apple in apples:
+                # Checking collision between snake's head and apples
                 if snake.head.rect.colliderect(apple):
+                    APPLE_SOUND.play()
                     score += 5
                     apple.kill()
 
             for item in items:
                 if snake.head.rect.colliderect(item):
+                    ITEM_SOUND.play()
                     snake.collision_with_items(item)
 
             if snake.lives <= 0:
@@ -132,25 +144,28 @@ def game(screen):
         # Cleaning the screen
         screen.fill((0, 0, 0))
 
+        # Rendering entities
+        apples.draw(screen)
+        bombs.draw(screen)
+        big_bombs.draw(screen)
+        items.draw(screen)
+
         if snake.state == snake.FROZEN_TIME_STATE:
             screen.blit(frozen_bg, (0, 0))
+
+        # Rendering snake
+        snake.render(screen)
 
         # Rendering Fonts
         draw_text(f"Score: {score}", SMALL_FONT, WHITE, screen, 48, 20)
         draw_text(f"Round {rounds}", SMALL_FONT, WHITE, screen, 281, 20)
         draw_text(f"Lives: {snake.lives}", SMALL_FONT, WHITE, screen, 497, 20)
 
-        # Rendering entities
-        snake.render(screen)
-        apples.draw(screen)
-        bombs.draw(screen)
-        big_bombs.draw(screen)
-        items.draw(screen)
-
         if len(apples) == 0:
             rounds += 1
 
             game_state = START_STATE
+            snake.state = snake.STAR_STATE
 
             lives = snake.lives
 
@@ -158,6 +173,9 @@ def game(screen):
             snake.lives = lives
 
             max_bombs += 1
+
+            if len(items) > 0:
+                score += 20
 
             apples.empty()
             bombs.empty()
@@ -189,10 +207,12 @@ def game(screen):
                 if resume_rect.collidepoint((mx, my)):
                     draw_text("Resume game", SMALL_FONT, RED, screen, 247, 376)
                     if click:
+                        SELECT_SOUND.play()
                         game_state = START_STATE
                 elif back_rect.collidepoint((mx, my)):
                     draw_text("Back to menu", SMALL_FONT, RED, screen, 239, 438)
                     if click:
+                        SELECT_SOUND.play()
                         running = False
             elif game_state == START_STATE:
                 start_timer += 1
@@ -200,7 +220,8 @@ def game(screen):
                 screen.blit(start_bg, (0, 0))
                 draw_text(f"{start_counter}", BIG_FONT, WHITE, screen, 331, 289)
 
-                if start_timer > 20:
+                if start_timer > fps:
+                    COUNT_SOUND.play()
                     start_timer = 0
                     start_counter += 1
 
@@ -211,23 +232,25 @@ def game(screen):
             elif game_state == GAME_OVER_STATE:
                 screen.blit(game_over_img, (0, 0))
 
-                draw_text(f"{score}", SMALL_FONT, WHITE, screen, 371, 297)
-                draw_text(f"{rounds}", SMALL_FONT, WHITE, screen, 371, 339)
+                draw_text(str(score), SMALL_FONT, WHITE, screen, 392, 292)
+                draw_text(str(rounds), SMALL_FONT, WHITE, screen, 392, 334)
 
-                draw_text("Try again", SMALL_FONT, WHITE, screen, 264, 440)
-                draw_text("Back to menu", SMALL_FONT, WHITE, screen, 239, 502)
+                draw_text("Try again", SMALL_FONT, WHITE, screen, 264, 446)
+                draw_text("Back to menu", SMALL_FONT, WHITE, screen, 239, 498)
 
                 if try_again_rect.collidepoint((mx, my)):
-                    draw_text("Try again", SMALL_FONT, RED, screen, 264, 440)
+                    draw_text("Try again", SMALL_FONT, RED, screen, 264, 446)
                     if click:
+                        SELECT_SOUND.play()
                         game(screen)
                         running = False
                 elif back_rect_go.collidepoint((mx, my)):
-                    draw_text("Back to menu", SMALL_FONT, RED, screen, 239, 502)
+                    draw_text("Back to menu", SMALL_FONT, RED, screen, 239, 498)
                     if click:
+                        SELECT_SOUND.play()
                         running = False
 
             click = False
 
         pygame.display.flip()
-        clock.tick(20)
+        clock.tick(fps)

@@ -1,22 +1,24 @@
 import pygame
 
-from control.constants import BLUE, WINDOW_SIZE
+from control.constants import BOMB_SOUND, BOMB_SPRITE
 from entities.Bomb import Bomb
+from entities.MovingObject import MovingObject
 
 
-class BigBomb(Bomb):
+class BigBomb(MovingObject):
     def __init__(self):
         super().__init__()
 
-        self.image = pygame.surface.Surface((60, 60))
-        self.image.fill(BLUE)
+        self.image = pygame.transform.scale2x(BOMB_SPRITE)
 
-        self.rect = pygame.rect.Rect(0, 0, 60, 60)
+        self.rect = self.image.get_rect()
         self.random_pos()
 
         self.speed *= 0.6
 
         self.damage = 3
+
+        self.eatable = False
 
     def update(self, bombs, apples, max_apples):
         super().update()
@@ -24,6 +26,7 @@ class BigBomb(Bomb):
 
     def spawn_bombs(self, group, apples, max_apples):
         if apples <= int(max_apples / 2):
+            BOMB_SOUND.play()
             for _ in range(3):
                 bomb = Bomb()
                 bomb.rect.center = self.rect.center

@@ -1,4 +1,4 @@
-from control.constants import BLUE, BLUE_LIGHT
+from control.constants import BOMB_SPRITE, BOMB_EATABLE_SPRITE
 from entities.MovingObject import MovingObject
 
 
@@ -6,7 +6,10 @@ class Bomb(MovingObject):
     def __init__(self):
         super().__init__()
 
-        self.image.fill(BLUE)
+        self.image = BOMB_SPRITE
+
+        self.rect = self.image.get_rect()
+        self.random_pos()
 
         self.speed *= 0.8
 
@@ -20,6 +23,6 @@ class Bomb(MovingObject):
 
     def set_color(self):
         if self.eatable:
-            self.image.fill(BLUE_LIGHT)
+            self.image = BOMB_EATABLE_SPRITE
         else:
-            self.image.fill(BLUE)
+            self.image = BOMB_SPRITE
