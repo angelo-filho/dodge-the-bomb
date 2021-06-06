@@ -1,14 +1,13 @@
 from pygame.locals import *
-
 from control.supports import *
 from control.constants import *
+from os.path import join
 
-credits_img = pygame.image.load(join("assets", "sprites", "credits_screen", "credits.png"))
+controls_img = pygame.image.load(join("assets", "sprites", "controls_screen", "controls.png"))
 
 
-def credits_screen(screen):
-    back_rect = draw_text("Back", small_font, WHITE, screen, 306, 558)
-
+def controls_screen(screen):
+    back_rect = draw_text("Back", SMALL_FONT, WHITE, screen, 306, 515)
     click = False
     running = True
 
@@ -25,12 +24,12 @@ def credits_screen(screen):
         mx, my = pygame.mouse.get_pos()
 
         screen.fill((0, 0, 0))
-        screen.blit(credits_img, (0, 0))
+        screen.blit(controls_img, (0, 0))
 
-        draw_text("Back", small_font, WHITE, screen, 306, 558)
+        draw_text("Back", SMALL_FONT, WHITE, screen, 306, 515)
 
         if back_rect.collidepoint((mx, my)):
-            draw_text("Back", small_font, RED, screen, 306, 558)
+            draw_text("Back", SMALL_FONT, RED, screen, 306, 515)
             if click:
                 running = False
 

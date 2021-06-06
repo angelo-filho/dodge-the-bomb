@@ -2,8 +2,8 @@ import pygame
 
 from pygame.locals import *
 from os import path
-from screens.main_menu import main_menu
-from control.suports import quit_game
+from scenes.main_menu import main_menu
+from control.supports import quit_game
 
 snake_pong = pygame.image.load(path.join("assets", "sprites", "start_screen", "start_screen.png"))
 
