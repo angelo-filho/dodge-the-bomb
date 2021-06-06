@@ -1,9 +1,11 @@
 import pygame
-from screens.start_screen import start_screen
+
+from control.constants import WINDOW_SIZE
+from scenes.start_screen import start_screen
 
 pygame.init()
 
-screen = pygame.display.set_mode((680, 680))
+screen = pygame.display.set_mode(WINDOW_SIZE)
 pygame.display.set_caption("Snake and Pong")
 
 start_screen(screen)
